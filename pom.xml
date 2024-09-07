@@ -10,10 +10,10 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.example</groupId>
-  <artifactId>filemonitoring</artifactId>
+  <artifactId>main</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>filemonitoring</name>
-  <description>filemonitoring</description>
+  <name>main</name>
+  <description>main</description>
   <url/>
   <licenses>
     <license/>
