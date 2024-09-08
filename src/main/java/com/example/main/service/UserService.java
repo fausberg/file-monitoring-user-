@@ -1,6 +1,7 @@
 package com.example.main.service;
 
 import com.example.main.entity.User;
+import com.example.main.enums.Role;
 import com.example.main.repository.UserRepository;
 import java.util.Collections;
 import java.util.List;
@@ -12,11 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Service
 @RequiredArgsConstructor
-@RequestMapping("/user")
 public class UserService implements UserDetailsService {
 
   private final UserRepository userRepository;
@@ -38,13 +37,17 @@ public class UserService implements UserDetailsService {
       return new org.springframework.security.core.userdetails.User(
           user.getEmail(),
           user.getPassword(),
-          Collections.singleton(new SimpleGrantedAuthority(user.getRole()))
+          Collections.singleton(new SimpleGrantedAuthority(user.getRoleEnum().toString()))
       );
   }
 
   public User createUser(User user) {
-    user.setRole("ROLE_USER");
+    user.setRoleEnum(Role.ROLE_USER);
     userRepository.save(user);
     return user;
+  }
+
+  public boolean userWithEmailIsExist(String email) {
+     return userRepository.existsUserByEmail(email);
   }
 }
