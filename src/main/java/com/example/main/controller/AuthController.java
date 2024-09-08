@@ -7,6 +7,7 @@ import com.example.main.dto.request.UserRequestForRegistration;
 import com.example.main.dto.response.JwtResponse;
 import com.example.main.entity.User;
 import com.example.main.exceptions.AppError;
+import com.example.main.mapper.UserMapper;
 import com.example.main.service.UserService;
 import com.example.main.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthController {
 
   private final AuthenticationManager authenticationManager;
 
-  private final PasswordEncoder passwordEncoder;
+  private final UserMapper userMapper;
 
   @PostMapping("/auth")
   public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest request) {
@@ -47,14 +48,13 @@ public class AuthController {
 
   @PostMapping("/registration")
   public ResponseEntity<?> createNewUser(@RequestBody UserRequestForRegistration userRequestForRegistration) {
-    if(userService.findUserByEmail(userRequestForRegistration.getEmail()).isPresent()) {
-      return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Пользователь с таким именем уже существует"), HttpStatus.BAD_REQUEST);
+    if(userService.userWithEmailIsExist(userRequestForRegistration.getEmail())) {
+      return new ResponseEntity<>(
+          new AppError(HttpStatus.BAD_REQUEST.value(), "Пользователь с такой почтой уже существует"),
+          HttpStatus.BAD_REQUEST);
     }
 
-    User user = User.builder().email(userRequestForRegistration.getEmail())
-        .password(passwordEncoder.encode(userRequestForRegistration.getPassword()))
-        .name(userRequestForRegistration.getName())
-        .build();
+    User user = userMapper.userRequestForRegistrationToUser(userRequestForRegistration);
     userService.createUser(user);
     UserDetails userDetails = userService.loadUserByUsername(userRequestForRegistration.getEmail());
     String token = tokenUtils.generateToken(userDetails);
