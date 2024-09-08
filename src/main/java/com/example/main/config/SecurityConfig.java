@@ -47,6 +47,8 @@ public class SecurityConfig {
 
   private final OAuth2UserService oAuth2UserService;
 
+  private final BCryptPasswordEncoder passwordEncoder;
+
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -72,14 +74,9 @@ public class SecurityConfig {
   @Bean
   public DaoAuthenticationProvider daoAuthenticationProvider() {
     DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
     daoAuthenticationProvider.setUserDetailsService(userService);
     return daoAuthenticationProvider;
-  }
-
-  @Bean
-  public BCryptPasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
   }
 
   @Bean

@@ -12,6 +12,8 @@ import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Service;
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
   private final UserRepository userRepository;
+
+  private final BCryptPasswordEncoder passwordEncoder;
 
   @Override
   @SneakyThrows
@@ -51,7 +55,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     User user = new User();
     user.setName(userInfoDto.getName());
     user.setEmail(userInfoDto.getEmail());
-    user.setPassword(userInfoDto.getPassword());
+    user.setPassword(passwordEncoder.encode(userInfoDto.getPassword()));
     user.setRoleEnum(ROLE_USER);
     return userRepository.save(user);
 
@@ -60,7 +64,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
   private User updateExistingUser(User existingUser, UserRequestForRegistration userInfoDto) {
     existingUser.setName(userInfoDto.getName());
     existingUser.setEmail(userInfoDto.getEmail());
-    existingUser.setPassword(userInfoDto.getPassword());
+    existingUser.setPassword(passwordEncoder.encode(userInfoDto.getPassword()));
     existingUser.setRoleEnum(ROLE_USER);
     return userRepository.save(existingUser);
   }
