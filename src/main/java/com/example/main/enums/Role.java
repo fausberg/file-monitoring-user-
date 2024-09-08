@@ -2,6 +2,7 @@ package com.example.main.enums;
 
 public enum Role {
   ROLE_USER("USER"),
+
   ROLE_ADMIN("ADMIN");
 
   private final String text;
@@ -9,6 +10,7 @@ public enum Role {
   Role(String text) {
     this.text = text;
   }
+
   public String text() {
     return text;
   }
