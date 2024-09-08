@@ -58,6 +58,9 @@ public class SecurityConfig {
         .authorizeHttpRequests((auth) -> auth
                 .requestMatchers(USER_INFO).hasRole(ROLE_USER.text())
                 .requestMatchers("/login", "/oauth2/**").permitAll()
+                .requestMatchers("/swagger-ui-custom.html", "/swagger-ui.html", "/swagger-ui/**",
+                    "/v3/api-docs/**", "/webjars/**", "/swagger-ui/index.html", "/api-docs/**")
+                .permitAll()
                 .anyRequest().permitAll()
             )
         .oauth2Login(oauth2 -> oauth2
